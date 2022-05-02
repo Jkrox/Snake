@@ -51,11 +51,10 @@ class Apple{
 		while(true){
 			isTouching = false;
 			this.x = Math.floor(Math.random() * canvas.width / snake.size) * snake.size
-			this.y = Math.floor(Math.random() * canvas.heigth / snake.size) * snake.size
+			this.y = Math.floor(Math.random() * canvas.height / snake.size) * snake.size
 			for (var i =0; i < snake.tail.length; i++){
-				if (this.x == snake.tail(i).x && this.y === snake.tail(i).y){
+				if (this.x == snake.tail[i].x && this.y == snake.tail[i].y){
 					isTouching = true
-
 				}
 			}
 			if(!isTouching){
@@ -63,6 +62,7 @@ class Apple{
 			}
 			this.color = "pink"
 			this.size = snake.size
+			console.log(this.x, this.y)
 		}
 	}
 }
@@ -70,11 +70,11 @@ class Apple{
 
 var canvas = document.getElementById("canvas")
 
-var snake = new Snake()
+var snake = new Snake(20,20,20);
 
-var apple = new Apple()
+var apple = new Apple();
 
-var canvasContext = canvas.getContext('2d')
+var canvasContext = canvas.getContext('2d');
 
 window.onload = ()=>{
 	gameLoop();
@@ -91,13 +91,24 @@ function show(){
 
 
 function update(){
+	canvasContext.clearRect(0,0, canvas.width, canvas.height)
+	console.log("update")
 	snake.move()
+	eatApple()
 
 }
 
+function eatApple(){
+	if(snake.tail[snake.tail.length - 1].x == apple.x &&
+		snake.tail[snake.tail.length -1].y == apple.y){
+			snake.tail[snake.tail.length] = {x:apple.x, y: apple.y}
+			apple = new Apple();
+		}
+}
+
 function draw(){
-	createRect(0,0, canvas.width, canvas.heigth, 'black')
-	createRect(0,0, canvas.width, canvas.heigth)
+	createRect(0,0, canvas.width, canvas.height, "black")
+	createRect(0,0, canvas.width, canvas.height)
 	for (var i=0; i < snake.tail.length; i++){
 		createRect(snake.tail[i].x + 2.5, snake.tail[i].y + 2.5, snake.size - 5, snake.size - 5, "white")
 	}
@@ -109,9 +120,9 @@ function draw(){
 
 }
 
-function createRect(x,y, heigth, color){
+function createRect(x,y, height, color){
 	canvasContext.fillStyle= color
-	canvasContext.fillRect(x,y,width, heigth) 
+	canvasContext.fillRect(x,y,width, height) 
 }
 
 window.addEventListener("keydown", (event)=>{
